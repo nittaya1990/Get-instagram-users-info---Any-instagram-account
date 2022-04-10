@@ -56,6 +56,7 @@ def ToTxt(Byline, Folder, As, Mode):
         os.makedirs(GlobalFolder+"/"+Folder+"/"+Mode)
 
     with open(GlobalFolder+"/"+Folder+"/"+Mode+"/"+As, "a+") as outfile :
+         Byline = Byline.encode('ascii', 'ignore').decode('ascii')
          outfile.write(Byline+"\n")
 
 ########################## [ APIS ] ##########################
