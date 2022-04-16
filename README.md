@@ -1,4 +1,6 @@
-# ⚙ last update was 19 March 2021.
+# ⚙ last update was 19 November 2021.
+
+``old update was 19 March 2021.``
 
 ``old update was 9 March 2021.``
 
@@ -20,8 +22,26 @@
    </a>
 </p>
 
-``Screenshot``
-![zxllkada_TOLL](zxllkada/instainfo_zxll_sc.jpg)
+``Keep this project up to date by supporting me : ``
+
+        Bitcoin : bc1q0yjjfp73xjphel6qrvnwdygrdr6sh0fr5fawwk
+        
+        Litecoin : ltc1q34wcqw4pg75rjay644smk6a04zv6du79sttj99
+        
+        Trx : TUBz4DaLKTXuVajmbpDH3TZSJPPZccaTFV
+        
+        Dogecoin : DEx4pmUH3yR51BQj6DR1vJBFT7icnfMTqF
+        
+        PayPal : Click on sponsor button. 
+
+
+``Old Screenshot``
+![zxllkada_TOOL](zxllkada/instainfo_zxll_sc.jpg)
+
+``New Screenshot``
+
+![zxllkada_TOOL](zxllkada/20211120_001559.jpg)
+
 # About this tool
 
 :warning: Note! : DO NOT USE THIS TOOL FOR CKRACKING
@@ -35,35 +55,156 @@ This tool works prefect on Kali and it support termux (Phones "Android") without
    Facebook : Facebook.com/zxlll
 ```
 
-This tool helping you to get Instagram users informations without login to your account.
+This tool helping you to get Instagram users informations and dump their followers or following and more important features, without login to your account ( login required some times).
 
 
 # install ON Kali Linux :
 ```
    sudo apt-get update && sudo apt-get -y full-upgrade
-   sudo install git python python3-pip
+   sudo apt install git python
    git clone https://github.com/zxllkada/Get-instagram-users-info---Any-instagram-account.git
+   cd Get-instagram-users-info---Any-instagram-account
+   pip install -r requirements.txt
 
 ```
 
 # install ON TERMUX :
 ```
    pkg update && upgrade
-   pkg install git python python3-pip
+   pkg install git python
    git clone https://github.com/zxllkada/Get-instagram-users-info---Any-instagram-account.git
+   cd Get-instagram-users-info---Any-instagram-account
+   pip install -r requirements.txt
 
 ```
 
 # RUNNING
 ```
    cd Get-instagram-users-info---Any-instagram-account
-   pip3 install -r requirements.txt
    cd zxllkada
    cd Dump_Instagram_Information_ANY_ACCOUNT
    python3 InstaInfo_zxll.py
 ```
-* After that enter {username} and enjoy.
+   OR
+```
+   cd zxllkada
+   cd Dump_Instagram_Information_ANY_ACCOUNT
+   python3 InstaInfo_zxll.py
+```
 
+* After that choose the mode, login to instagram can be required for some features. 
+
+
+# WHAT THIS TOOL DO [ FEATURES ]
+```
+        - Dump users information
+        - Dump users following
+        - Dump users followers
+        - Auto Following
+        - Analysis your profile
+        - Make instagram combos
+        
+        And more things coming soon... 
+```
+``Features : Dump user information ( Screenshot )``
+![zxllkada_Features](zxllkada/20211120_001350.jpg)
+![zxllkada_Features](zxllkada/20211120_002323.jpg)
+
+# LOGIN TO INSTAGRAM [ SOURCE CODE ]
+```python
+def LoginToInstagram():
+    global api
+
+    logging.basicConfig()
+    logger = logging.getLogger('instagram_private_api')
+    logger.setLevel(logging.WARNING)
+
+    print (f"{Y}LOGIN TO YOUR INSTAGRAM ACCOUNT IS REQUIRED *{W}\n")
+
+    SmartCheck = json.load(open("SUPER_MODE/SuperLIB/checkJson/check.json"))
+    if SmartCheck["loggedBefore"] == False :
+        print (f"{LB}LOGIN TO YOUR INSTAGRAM ACCOUNT FIRST{W}")
+        try :
+            username = input(f"{Y}	>> ENTER USERNAME : {W}").strip()
+            password = input(f"{Y}	>> ENTET THE PASSWORD : {W}").strip()
+        except :
+            sys.exit()
+        ModifyJson = { "loggedBefore" : True }
+        with open("SUPER_MODE/SuperLIB/checkJson/check.json", "w") as outfile :
+            json.dump(ModifyJson, outfile)
+
+    else :
+        msg = input(f"{Y}==>{G} Do You Want To Use Current Cookies ? (Y/N) : {W}").strip()
+        if msg.lower() == 'y' :
+            username = ''
+            password = ''
+        elif msg.lower() == 'n' :
+            Fix()
+            print (f"{LB}LOGIN TO YOUR INSTAGRAM ACCOUNT FIRST{W}")
+            try :
+                username = input(f"{Y}	>> ENTER YOUR USERNAME : {W}").strip()
+                password = input(f"{Y}	>> ENTET THE PASSWORD : {W}").strip()
+            except :
+                sys.exit()
+            ModifyJson = { "loggedBefore" : True }
+            with open("SUPER_MODE/SuperLIB/checkJson/check.json", "w") as outfile :
+                json.dump(ModifyJson, outfile)
+        else :
+            print (f"{R}[!]{W} {Y}Answer with (Y/N) next time.{W}")
+            sys.exit()
+
+    print ("")
+    device_id = None
+    try:
+
+        settings_file = "SUPER_MODE/SuperLIB/cookie/cookies.txt"
+        if not os.path.isfile(settings_file):
+            print (f'[ {Y}MAKING NEW COOKIES{W} ] : {settings_file}')
+            api = Client(username, password, on_login=lambda x: onlogin_callback(x, "SUPER_MODE/SuperLIB/cookie/cookies.txt"))
+        else:
+            with open(settings_file) as file_data:
+                cached_settings = json.load(file_data, object_hook=from_json)
+
+            print (f'[ {G}COOKIES FILE{W} ] : {settings_file}')
+
+            device_id = cached_settings.get('device_id')
+            api = Client(username, password, settings=cached_settings)
+
+    except (ClientCookieExpiredError, ClientLoginRequiredError) as e:
+        print (f'[ {R}COOKIES EXPIRED RE-LOGIN{W} ] : {e}\n')
+        Fix()
+        sys.exit()
+
+    except ClientLoginError as e:
+        print (f'[ {R}ClientLoginError{W} ] : {e}\n')
+        Fix()
+        sys.exit()
+
+    except ClientError as e:
+        print (f'[ {R}ClientError{W} ] : {e.msg}\n[ {R}Code{W} ] : {e.code}\n[ {R}Response{W} ] : {e.error_response}\n')
+        sys.exit()
+
+    except Exception as e:
+        print (f'[ {R}Unexpected Exception{W} ] : {e}\n')
+        sys.exit()
+
+    except KeyboardInterrupt :
+        sys.exit()
+
+
+    cookie_expiry = api.cookie_jar.auth_expires
+    print (f"[ {G}Cookie Expiry IN{W} ] : {datetime.datetime.fromtimestamp(cookie_expiry).strftime('%Y-%m-%dT%H:%M:%SZ')}\n")
+
+    userId = api.authenticated_user_id
+    UserInfo = api.user_info(userId)
+    
+    print (f"{G}LOGGED IN SUCCESSFULLY AS{W}",UserInfo["user"]["username"])
+    
+
+```
+```
+https://github.com/zxllkada/Get-instagram-users-info---Any-instagram-account/blob/master/zxllkada/Dump_Instagram_Information_ANY_ACCOUNT/SUPER_MODE/SuperLIB/login.py
+```
 
 # DATA [ UPDATES SOON ]
 ```
@@ -117,8 +258,9 @@ This tool helping you to get Instagram users informations without login to your 
         、__ [~] Loggin Page Id
         、__ [~] Fbid
         、__ [~] Connected Fb Page
-        、__ [~] Email > Next Updates
-        、__ [~] Phone > Next Updates
+        、__ [~] Email
+        、__ [~] Phone
+        、__ [~] Whatsapp Number
         、__ [~] Twitter Account > Next Updates
         、__ [~] Facebook Account > Next Updates
         、__ [~] Web Match > Next Updates
@@ -134,7 +276,9 @@ This tool helping you to get Instagram users informations without login to your 
 [^] SAVE PROFILE INFO
 [^] SAVE PROFILE PIC
 [^] SAVE PRIFILE PIC INFO
-[^] SAVE LAST POST WITH INFO
+[^] SAVE INSTAGRAM COMBOS
+[^] SAVE FOLLOWING
+[^] SAVE FOLLOWERS
 ```
 
 
